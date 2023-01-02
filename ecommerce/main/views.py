@@ -18,4 +18,10 @@ def brand_list(request):
 #product list
 def product_list(request):
     data=Product.objects.all().order_by('-id')
-    return render(request, 'product_list.html', {'data':data})
+    cats=Product.objects.distinct().values('category_title')
+    return render(request, 'product_list.html', 
+    {
+        'data':data,
+         'cats':cats,
+    }
+    )
