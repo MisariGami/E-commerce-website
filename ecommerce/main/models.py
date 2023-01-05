@@ -71,7 +71,7 @@ class Product(models.Model):
     color=models.ForeignKey(Color,on_delete=models.CASCADE)
     size=models.ForeignKey(Size,on_delete=models.CASCADE)
     status=models.BooleanField(default=True)
-    
+    is_featured=models.BooleanField(default=False)
     class Meta:
         verbose_name_plural='6. Products'
 
