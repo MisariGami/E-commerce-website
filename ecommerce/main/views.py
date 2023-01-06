@@ -67,3 +67,8 @@ def brand_product_list(request,brand_id):
         'colors': colors,
         'sizes': sizes,
     })
+
+# Product detail
+def product_detail(request,slug,id):
+    product=Product.objects.get(id=id)
+    return render(request, 'product_detail.html',{'data':product})
