@@ -59,6 +59,7 @@ def brand_product_list(request,brand_id):
     brands=Product.objects.distinct().values('brand__title','brand__id')
     colors=Product.objects.distinct().values('color__title','color__id','color__color_code')
     sizes=Product.objects.distinct().values('size__title','size__id')
+    
     return render(request, 'category_product_list.html',
     {
         'data':data,
@@ -66,9 +67,17 @@ def brand_product_list(request,brand_id):
         'brands':brands,
         'colors': colors,
         'sizes': sizes,
+        
     })
 
 # Product detail
 def product_detail(request,slug,id):
     product=Product.objects.get(id=id)
-    return render(request, 'product_detail.html',{'data':product})
+    related_products=Product.objects.filter(category=product.category).exclude(id=id)[:4]
+    return render(request, 'product_detail.html',{'data':product,'related':related_products})
+
+# search
+# def search(request):
+#     q=request.GET['q']
+#     data=Product.objects.filter(title_icontains=q).order_by('-id')
+#     return render(request, 'search.html', {'data':data})
