@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse,HttpResponse
 from .models import Banner,Category,Brand,Product,ProductAttribute
-from django.db.models import Max,Min,Count
 from django.template.loader import render_to_string
 
 # Home Page
@@ -23,31 +22,55 @@ def brand_list(request):
 # Product List
 def product_list(request):
 	data=Product.objects.all().order_by('-id')
-	min_price=ProductAttribute.objects.aggregate(Min('price'))
-	max_price=ProductAttribute.objects.aggregate(Max('price'))
-	return render(request,'product_list.html',
-		{
-			'data':data,
-			'min_price':min_price,
-			'max_price':max_price,
-		}
-		)
+	cats=Product.objects.distinct().values('category__title','category__id')
+	brands=Product.objects.distinct().values('brand__title','brand__id')
+	colors=Product.objects.distinct().values('color__title','color__id','color__color_code')
+	sizes=Product.objects.distinct().values('size__title','size__id')
+	return render(request, 'product_list.html', 
+    {
+        'data':data,
+        'cats':cats,
+        'brands':brands,
+        'colors': colors,
+        'sizes': sizes,
+    }
+    )
 
 # Product List According to Category
 def category_product_list(request,cat_id):
-	category=Category.objects.get(id=cat_id)
-	data=Product.objects.filter(category=category).order_by('-id')
-	return render(request,'category_product_list.html',{
-			'data':data,
-		})
+    category=Category.objects.get(id=cat_id)
+    data=Product.objects.filter(category=category).order_by('-id')
+    cats=Product.objects.distinct().values('category__title','category__id')
+    brands=Product.objects.distinct().values('brand__title','brand__id')
+    colors=Product.objects.distinct().values('color__title','color__id','color__color_code')
+    sizes=Product.objects.distinct().values('size__title','size__id')
+    return render(request, 'category_product_list.html',
+    {
+        'data':data,
+        'cats':cats,
+        'brands':brands,
+        'colors': colors,
+        'sizes': sizes,
+    })
 
 # Product List According to Brand
 def brand_product_list(request,brand_id):
-	brand=Brand.objects.get(id=brand_id)
-	data=Product.objects.filter(brand=brand).order_by('-id')
-	return render(request,'category_product_list.html',{
-			'data':data,
-		})
+    brand=Brand.objects.get(id=brand_id)
+    data=Product.objects.filter(brand=brand).order_by('-id')
+    cats=Product.objects.distinct().values('category__title','category__id')
+    brands=Product.objects.distinct().values('brand__title','brand__id')
+    colors=Product.objects.distinct().values('color__title','color__id','color__color_code')
+    sizes=Product.objects.distinct().values('size__title','size__id')
+
+    return render(request, 'category_product_list.html',
+    {
+        'data':data,
+        'cats':cats,
+        'brands':brands,
+        'colors': colors,
+        'sizes': sizes,
+
+    })
 
 # Product Detail
 def product_detail(request,slug,id):
@@ -67,11 +90,7 @@ def filter_data(request):
 	categories=request.GET.getlist('category[]')
 	brands=request.GET.getlist('brand[]')
 	sizes=request.GET.getlist('size[]')
-	minPrice=request.GET['minPrice']
-	maxPrice=request.GET['maxPrice']
 	allProducts=Product.objects.all().order_by('-id').distinct()
-	allProducts=allProducts.filter(productattribute__price__gte=minPrice)
-	allProducts=allProducts.filter(productattribute__price__lte=maxPrice)
 	if len(colors)>0:
 		allProducts=allProducts.filter(productattribute__color__id__in=colors).distinct()
 	if len(categories)>0:
