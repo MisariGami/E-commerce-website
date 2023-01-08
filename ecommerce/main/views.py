@@ -77,7 +77,7 @@ def product_detail(request,slug,id):
     return render(request, 'product_detail.html',{'data':product,'related':related_products})
 
 # search
-# def search(request):
-#     q=request.GET['q']
-#     data=Product.objects.filter(title_icontains=q).order_by('-id')
-#     return render(request, 'search.html', {'data':data})
+def search(request):
+    q=request.GET['q']
+    data=Product.objects.filter(title__icontains=q).order_by('-id')
+    return render(request, 'search.html', {'data':data})
