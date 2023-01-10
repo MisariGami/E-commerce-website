@@ -3,15 +3,10 @@
 <html>
 <head>
 	<title>Ecommerce website</title>
-	<!-- Font Awesome -->
 	<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-free/css/all.min.css' %}" />
-	<!-- Bootstrap 4 CSS -->
 	<link rel="stylesheet" type="text/css" href="{% static 'bs4/bootstrap.min.css' %}" />
-	<!-- Main Jquery -->
 	<script type="text/javascript" src="{% static 'jquery.min.js' %}"></script>
-	<!-- Bootstrap 4 JS -->
 	<script type="text/javascript" src="{% static 'bs4/bootstrap.min.js' %}"></script>
-	<!-- CustomJs -->
 	<link rel="stylesheet" type="text/css" href="{% static 'custom.css' %}" />
 	<script type="text/javascript" src="{% static 'custom.js' %}"></script>
 </head>
@@ -65,7 +60,7 @@
     
     {% block content %}
     {% endblock %}
-
+{% comment %} 
 <footer class="pt-4 my-md-5 pt-md-5 border-top container">
     <div class="row">
         <div class="col-12 col-md">
@@ -104,4 +99,4 @@
     </div>
     </footer>
 </body>
-</html>
+</html> {% endcomment %}
