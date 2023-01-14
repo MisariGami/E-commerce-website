@@ -38,14 +38,15 @@ $(document).ready(function(){
         var _vm=$(this);
         var _qty =$("#productQty").val();
         var _productId =$(".product-id").val();
+        var _productImage =$(".product-image").val();
         var _productTitle =$(".product-title").val();
-       // console.log(_qty, -_productId, _productTitle);
         var _productPrice =$(".product-price").text();
         
         $.ajax({
             url:'/add-to-cart',
 			data:{
                 'id':_productId,
+                'image': _productImage,
                 'qty': _qty,
                 'title':_productTitle,
                 'price':_productPrice
@@ -61,5 +62,49 @@ $(document).ready(function(){
 			}
         })
 
+    });
+
+    //delete item from cart
+    $(document).on('click','delete-item',function(){
+        var _pId = $(this).attr('data-item');
+        var _vm=$(this);
+        $.ajax({
+            url:'/delete-from-cart',
+			data:{
+                'id':_pId,
+            },
+			dataType:'json',
+			beforeSend:function(){
+				_vm.attr('disabled',true);
+			},
+			success:function(res){
+				$(".cart-list").text(res.totalitems);
+				_vm.attr('disabled',false);
+                $("#cartList").html(res.data);
+			}
+        })
+    });
+
+    //update item from cart
+    $(document).on('click','update-item',function(){
+        var _pId = $(this).attr('data-item');
+        var _pQty = $(".product-qty-"+_pId).val();
+        var _vm=$(this);
+        $.ajax({
+            url:'/update-cart',
+			data:{
+                'id':_pId,
+                'qty':_pQty,
+            },
+			dataType:'json',
+			beforeSend:function(){
+				_vm.attr('disabled',true);
+			},
+			success:function(res){
+				//$(".cart-list").text(res.totalitems);
+				_vm.attr('disabled',false);
+                $("#cartList").html(res.data);
+			}
+        })
     });
 });

@@ -1,7 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from .models import Banner, Category, Brand, Product, ProductAttribute
 from django.template.loader import render_to_string
+from .forms import SignupForm
+from django.contrib.auth import login,authenticate
 
 # Home Page
 def home(request):
@@ -138,6 +140,7 @@ def filter_data(request):
 def add_to_cart(request):
     cart_p={}
     cart_p[str(request.GET['id'])]={
+        'image':request.GET['image'],
         'title':request.GET['title'],
         'qty':request.GET['qty'],
         'price':request.GET['price'],
@@ -156,3 +159,57 @@ def add_to_cart(request):
         request.session['cartdata']=cart_p
 
     return JsonResponse({'data': request.session['cartdata'], 'totalitems':len(request.session['cartdata'])})
+
+#cart list page
+def cart_list(request):
+    total_amt=0
+    for p_id, item in request.session['cartdata'].items():
+        total_amt+=int(item['qty'])*float(item['price'])
+    return render(request, 'cart.html', {'cart_data': request.session['cartdata'], 'totalitems':len(request.session['cartdata']), 'total_amt':total_amt})
+
+#delete from cart
+def delete_cart_item(request):
+    p_id:str(request.GET['id'])
+    if 'cartdata' in request.session:
+        if p_id in request.session['cartdata']:
+            cart_data=request.session['cartdata']
+            del request.session['cartdata'][p_id]
+            request.session['cartdata']= cart_data
+    
+    total_amt=0
+    for p_id, item in request.session['cartdata'].items():
+        total_amt+=int(item['qty'])*float(item['price'])
+    t=render_to_string('ajax/cart-list.html',{'cart_data': request.session['cartdata'], 'totalitems':len(request.session['cartdata']), 'total_amt':total_amt})
+    return JsonResponse({'data':t,'totalitems':len(request.session['cartdata'])})
+
+
+#update cart
+def update_cart_item(request):
+    p_id:str(request.GET['id'])
+    p_qty:request.GET['qty']
+    if 'cartdata' in request.session:
+        if p_id in request.session['cartdata']:
+            cart_data=request.session['cartdata']
+            cart_data[str(request.GET['id'])]['qty']=p_qty
+            request.session['cartdata']= cart_data
+    
+    total_amt=0
+    for p_id, item in request.session['cartdata'].items():
+        total_amt+=int(item['qty'])*float(item['price'])
+    t=render_to_string('ajax/cart-list.html',{'cart_data': request.session['cartdata'], 'totalitems':len(request.session['cartdata']), 'total_amt':total_amt})
+    return JsonResponse({'data':t,'totalitems':len(request.session['cartdata'])})
+
+#signup
+def signup(request):
+    form=SignupForm()
+    if request.method=='POST':
+        form=SignupForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username=form.cleaned_data.get('username')
+            pwd=form.cleaned_data.get('password1')
+            user=authenticate(username=username, password=pwd)
+            login(request,user)
+            return redirect('home')
+    
+    return render(request, 'registration/signup.html', {'form':form})
