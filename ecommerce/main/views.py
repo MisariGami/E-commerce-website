@@ -179,7 +179,7 @@ def delete_cart_item(request):
 	for p_id,item in request.session['cartdata'].items():
 		total_amt+=int(item['qty'])*float(item['price'])
 	t=render_to_string('ajax/cart-list.html',{'cart_data':request.session['cartdata'],'totalitems':len(request.session['cartdata']),'total_amt':total_amt})
-	return JsonResponse({'data':t})
+	return JsonResponse({'data':t,'totalitems':len(request.session['cartdata'])})
 
 
 #update cart
