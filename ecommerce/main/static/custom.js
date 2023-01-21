@@ -65,14 +65,16 @@ $(document).ready(function(){
     });
 
     //delete item from cart
-    $(document).on('click','delete-item',function(){
-        var _pId = $(this).attr('data-item');
-        var _vm=$(this);
-        $.ajax({
-            url:'/delete-from-cart',
+    $(document).on('click','.delete-item',function(){
+		var _pId=$(this).attr('data-item');
+        console.log(_pId);
+		var _vm=$(this);
+		// Ajax
+		$.ajax({
+			url:'/delete-from-cart',
 			data:{
-                'id':_pId,
-            },
+				'id':_pId,
+			},
 			dataType:'json',
 			beforeSend:function(){
 				_vm.attr('disabled',true);
@@ -80,10 +82,11 @@ $(document).ready(function(){
 			success:function(res){
 				$(".cart-list").text(res.totalitems);
 				_vm.attr('disabled',false);
-                $("#cartList").html(res.data);
+				$("#cartList").html(res.data);
 			}
-        })
-    });
+		});
+		// End
+	});
 
     //update item from cart
     $(document).on('click','update-item',function(){
