@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
+    'paypal.standard.ipn',
 ]
 
 MIDDLEWARE = [
@@ -124,6 +125,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_REDIRECT_URL='home'
 LOGOUT_REDIRECT_URL='login'
+
+PAYPAL_RECEIVER_EMAIL = 'misari0712@gmail.com'
+PAYPAL_TEST = True
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
