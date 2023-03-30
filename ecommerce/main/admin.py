@@ -32,3 +32,6 @@ admin.site.register(CartOrder,CartOrderAdmin)
 class CartOrderItemsAdmin(admin.ModelAdmin):
     list_display=('invoice_no','item','image_tag','qty','price','total')
 admin.site.register(CartOrderItems,CartOrderItemsAdmin)
+
+
+admin.site.register(Wishlist)

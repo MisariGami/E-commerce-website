@@ -2,12 +2,13 @@ from django.urls import reverse
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
-from .models import Banner, Category, Brand, Product, ProductAttribute, CartOrder, CartOrderItems
+from .models import Banner, Category, Brand, Product, ProductAttribute, CartOrder, CartOrderItems, Wishlist
 from django.template.loader import render_to_string
 from .forms import SignupForm
 from django.contrib.auth import login,authenticate
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+
 
 # Home Page
 def home(request):
@@ -247,4 +248,40 @@ def checkout(request):
             total=float(item['qty'])*float(item['price'])
         )
 
-       
+#user dashboard
+
+import calendar
+def my_dashboard(request):
+	# orders=CartOrder.objects.annotate(month=ExtractMonth('order_dt')).values('month').annotate(count=Count('id')).values('month','count')
+	# monthNumber=[]
+	# totalOrders=[]
+	# for d in orders:
+	# 	monthNumber.append(calendar.month_name[d['month']])
+	# 	totalOrders.append(d['count'])
+	return render(request, 'user/dashboard.html')
+
+# Wishlist
+def add_wishlist(request):
+	pid=request.GET['product']
+	product=Product.objects.get(pk=pid)
+	data={}
+	checkw=Wishlist.objects.filter(product=product,user=request.user).count()
+	if checkw > 0:
+		data={
+			'bool':False
+		}
+	else:
+		wishlist=Wishlist.objects.create(
+			product=product,
+			user=request.user
+		)
+		data={
+			'bool':True
+		}
+	return JsonResponse(data)
+
+
+# My Wishlist
+def my_wishlist(request):
+	wlist=Wishlist.objects.filter(user=request.user).order_by('-id')
+	return render(request, 'user/wishlist.html',{'wlist':wlist})
