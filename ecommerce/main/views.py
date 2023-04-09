@@ -192,8 +192,8 @@ def delete_cart_item(request):
 
 #update cart
 def update_cart_item(request):
-    p_id:str(request.GET['id'])
-    p_qty:request.GET['qty']
+    p_id=str(request.GET['id'])
+    p_qty=request.GET['qty']
     if 'cartdata' in request.session:
         if p_id in request.session['cartdata']:
             cart_data=request.session['cartdata']

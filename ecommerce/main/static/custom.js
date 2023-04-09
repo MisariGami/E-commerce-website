@@ -90,7 +90,7 @@ $(document).ready(function(){
 	});
 
     //update item from cart
-    $(document).on('click','update-item',function(){
+    $(document).on('click','.update-item',function(){
         var _pId = $(this).attr('data-item');
         var _pQty = $(".product-qty-"+_pId).val();
         var _vm=$(this);
